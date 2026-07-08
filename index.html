@@ -252,11 +252,16 @@
     }
 
     /* 5. Mobile Responsive Configuration */
+   /* 5. Mobile Responsive Configuration */
     @media (max-width: 768px) {
         .hero-showcase-container { flex-direction: column !important; height: auto !important; }
-        .hero-showcase-container .hero-brand-panel { width: 100% !important; flex: 0 0 auto !important; padding: 3rem 2rem !important;}
-        .hero-showcase-container .hero-image-scroller { width: 100% !important; height: 60vh !important; }
-        /* This ONLY runs on mobile screens */
+        
+        /* This hides the entire logo, description text, and sidebar panel on mobile */
+        .hero-showcase-container .hero-brand-panel { display: none !important; }
+        
+        /* This makes the model scroller take up the FULL mobile screen height */
+        .hero-showcase-container .hero-image-scroller { width: 100% !important; height: 100vh !important; }
+    }
  /* This ONLY runs on mobile screens */
         .hero-brand-panel img { 
             display: block;
