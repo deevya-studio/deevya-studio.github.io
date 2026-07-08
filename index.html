@@ -252,10 +252,18 @@
     }
 
     /* 5. Mobile Responsive Configuration */
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         .hero-showcase-container { flex-direction: column !important; height: auto !important; }
         .hero-showcase-container .hero-brand-panel { width: 100% !important; flex: 0 0 auto !important; padding: 3rem 2rem !important;}
         .hero-showcase-container .hero-image-scroller { width: 100% !important; height: 60vh !important; }
+        /* This ONLY runs on mobile screens */
+  .logo-class-name { 
+    display: block;
+    margin-top: 40px;     /* Pushes logo down on mobile only */
+    margin-bottom: 20px;  /* Adds space below logo on mobile only */
+    margin-left: auto;    /* Centers logo on mobile only */
+    margin-right: auto;   /* Centers logo on mobile only */
+    max-width: 160px;     /* Resizes logo for mobile screens only */
     }
 </style>
 
