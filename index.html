@@ -250,31 +250,47 @@
         opacity: 1 !important;
     }
 
-   /* /* 5. Mobile Responsive Configuration */
+   /* 5. Mobile Responsive Configuration */
     @media (max-width: 768px) {
+        /* Stack the brand panel on top of the image */
         .hero-showcase-container { 
             flex-direction: column !important; 
             height: auto !important; 
         }
-        .hero-image-scroller { 
-            width: 100% !important; 
-            height: 100vh !important; 
+        
+        /* Keep the panel block visible but remove heavy desktop padding */
+        .hero-showcase-container .hero-brand-panel { 
+            width: 100% !important;
+            flex: 0 0 auto !important;
+            padding: 2rem 1rem !important;
+            background: #050505 !important;
         }
-        .hero-brand-panel { 
+
+        /* HIDE the description text and 'swipe to explore' on mobile */
+        .hero-brand-panel h1, 
+        .hero-brand-panel p, 
+        .hero-brand-panel .digital-couture-text, 
+        .hero-brand-panel .swipe-text { 
             display: none !important; 
         }
-    }
-    } /* <-- This bracket is the secret! It locks the changes inside mobile only */
-    
- /* This ONLY runs on mobile screens */
+        
+        /* PUSH and center the logo beautifully at the top */
         .hero-brand-panel img { 
-            display: block;
-            margin-top: 40px !important;     /* Pushes logo down on mobile only */
-            margin-bottom: 20px !important;  /* Adds space below logo on mobile only */
-            margin-left: auto !important;    /* Centers logo on mobile only */
-            margin-right: auto !important;   /* Centers logo on mobile only */
-            max-width: 160px !important;     /* Resizes logo for mobile screens only */
+            display: block !important;
+            margin-top: 20px !important;     /* Pushes logo down away from top nav */
+            margin-bottom: 10px !important;  /* Space below logo */
+            margin-left: auto !important;    /* Centers horizontally */
+            margin-right: auto !important;   /* Centers horizontally */
+            max-width: 150px !important;     /* Clean mobile size */
+            height: auto !important;
         }
+        
+        /* Make the model scroller take up the rest of the view */
+        .hero-showcase-container .hero-image-scroller { 
+            width: 100% !important; 
+            height: 75vh !important; /* Set to 75% screen height so everything fits perfectly */
+        }
+    }
 </style>
 
 <section class="hero-showcase-container">
