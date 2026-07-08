@@ -43,22 +43,21 @@
         box-sizing: border-box !important;
         overflow: hidden !important;
     }
-/* 3. Left Side: Brand Panel Layout */
+/*/* 3. Left Side: Brand Panel Layout */
     .hero-showcase-container .hero-brand-panel {
-        flex: 0 0 38% !important; 
-        width: 38% !important;
+        flex: 0 0 28% !important; /* Reduced from 38% to 28% */
+        width: 28% !important;    /* This gives your 3D models 10% more screen space! */
         height: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important; 
-        justify-content: space-between !important; /* Forces text to top, swipe to bottom */
-        padding: 2rem 4rem 3rem 4rem !important; /* Reduced top and bottom padding to save space */
+        justify-content: space-between !important; 
+        padding: 2rem 3rem 3rem 3rem !important; /* Slightly tightened padding so text fits perfectly */
         background: #050505 !important;
         z-index: 50 !important; 
         box-sizing: border-box !important;
         border-right: 1px solid rgba(255, 255, 255, 0.02) !important;
     }
-
     /* Content Wrapper inside Left Panel */
     .hero-showcase-container .panel-content { 
         width: 100% !important;
@@ -250,15 +249,7 @@
     .hero-showcase-container .interactive-model-card.auto-loop .model-hover-video {
         opacity: 1 !important;
     }
-@media (min-width: 769px) {
-  .hero-showcase-container {
-    /* Automatically scales the entire section down to 80% */
-    transform: scale(0.85);
-    transform-origin: top center;
-    width: 115vw; /* Slightly widens the container to adjust for the scale shrinkage */
-    margin-left: -7.5vw; /* Centers it back perfectly on the screen */
-  }
-}
+
    /* /* 5. Mobile Responsive Configuration */
     @media (max-width: 768px) {
         .hero-showcase-container { 
@@ -272,7 +263,7 @@
         .hero-brand-panel { 
             display: none !important; 
         }
-    
+    }
     } /* <-- This bracket is the secret! It locks the changes inside mobile only */
     
  /* This ONLY runs on mobile screens */
