@@ -251,23 +251,20 @@
         opacity: 1 !important;
     }
 
-   /* 5. Mobile Responsive Configuration */
+   /* /* 5. Mobile Responsive Configuration */
     @media (max-width: 768px) {
         .hero-showcase-container { 
             flex-direction: column !important; 
             height: auto !important; 
         }
-        
-        /* This hides the panel ONLY on mobile */
-        .hero-showcase-container .hero-brand-panel { 
-            display: none !important; 
-        }
-        
-        /* This stretches the model to full screen ONLY on mobile */
-        .hero-showcase-container .hero-image-scroller { 
+        .hero-image-scroller { 
             width: 100% !important; 
             height: 100vh !important; 
         }
+        .hero-brand-panel { 
+            display: none !important; 
+        }
+    
     } /* <-- This bracket is the secret! It locks the changes inside mobile only */
     
  /* This ONLY runs on mobile screens */
