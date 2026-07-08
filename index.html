@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deevya Digital Apparel — Catalog</title>
+    <link rel="stylesheet" href="style.css">
+
+<!-- ==========================================
+     1. THE BRAND HEADER & MENU
+     ========================================== -->
+</head>
+<header>
+    <div class="logo">DEEVYA</div>
+    <nav>
+        <a href="#summer-show">SUMMER 2026</a>
+        <a href="#crowned-couture">CROWNED COUTURE</a>
+        <a href="#editorial">EDITORIAL & NOIR</a>
+        <a href="https://www.imvu.com/next/av/Deevya/" target="_blank" class="shop-all-btn">VIEW FULL SHOP</a>
+    </nav>
+</header>
+
+<style>
+    /* 1. Page Frame Flow Settings */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #050505 !important;
+        overflow-x: hidden !important; 
+        overflow-y: auto !important;   
+        scroll-behavior: smooth !important;
+    }
+
+    /* 2. Main Hero Container Frame */
+    .hero-showcase-container {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: #0a0a0a !important;
+        position: relative !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+/* 3. Left Side: Brand Panel Layout */
+    .hero-showcase-container .hero-brand-panel {
+        flex: 0 0 38% !important; 
+        width: 38% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important; 
+        justify-content: space-between !important; /* Forces text to top, swipe to bottom */
+        padding: 2rem 4rem 3rem 4rem !important; /* Reduced top and bottom padding to save space */
+        background: #050505 !important;
+        z-index: 50 !important; 
+        box-sizing: border-box !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.02) !important;
+    }
+
+    /* Content Wrapper inside Left Panel */
+    .hero-showcase-container .panel-content { 
+        width: 100% !important;
+        max-width: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    /* Logo Image Container */
+    .hero-showcase-container .brand-logo-wrapper {
+        width: 100% !important;
+        max-width: 240px !important; /* Slightly brought down to save massive vertical space */
+        margin-bottom: 0.5rem !important;
+    }
+
+    .hero-showcase-container .panel-logo-img {
+        width: 100% !important;
+        height: auto !important;
+        object-fit: contain !important;
+    }
+
+    /* Editorial Typography styling */
+    .hero-showcase-container .brand-subtitle { 
+        font-size: 0.8rem !important; 
+        font-weight: 300 !important; 
+        letter-spacing: 0.4em !important; 
+        color: #888888 !important; 
+        margin: 0 0 1rem 0 !important; 
+    }
+
+    .hero-showcase-container .brand-description { 
+        font-size: 0.85rem !important; /* Marginally adjusted for refined editorial layout */
+        line-height: 1.7 !important; 
+        letter-spacing: 0.05em !important; 
+        color: #cccccc !important; 
+        margin: 0 !important; 
+    }
+
+   /* THE SWIPE TEXT INDICATOR WITH LUXURY ANIMATION */
+    .hero-showcase-container .swipe-indicator { 
+        font-size: 0.7rem !important; 
+        font-weight: 500 !important;
+        letter-spacing: 0.35em !important; 
+        color: #ffffff !important; 
+        display: block !important;
+        visibility: visible !important;
+        margin-top: 2rem !important;
+        animation: luxuryPulse 2.5s infinite ease-in-out !important; /* 🔥 Brings back the cute motion */
+    }
+
+    /* The animation engine for the smooth drifting pulse */
+    @keyframes luxuryPulse {
+        0%, 100% { 
+            opacity: 0.3; 
+            transform: translateX(0); 
+        }
+        50% { 
+            opacity: 0.8; 
+            transform: translateX(6px); /* Smoothly glides slightly to the right */
+        }
+    }
+<style>
+    /* The animation engine for the smooth drifting pulse */
+    @keyframes luxuryPulse {
+        0%, 100% { 
+            opacity: 0.3; 
+            transform: translateX(0); 
+        }
+        50% { 
+            opacity: 0.8; 
+            transform: translateX(5px); 
+        }
+    }
+
+    /* 4. Right Side: Pure CSS Native Swipe/Scroll Runway */
+    .hero-showcase-container .hero-image-scroller {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        height: 100% !important;
+        background: #0d0d0d !important;
+        overflow-x: auto !important; 
+        overflow-y: hidden !important;
+        scroll-snap-type: x mandatory !important; 
+        -webkit-overflow-scrolling: touch; 
+        scroll-behavior: smooth !important; 
+    }
+
+    /* Hide the native browser scrollbar track */
+    .hero-image-scroller::-webkit-scrollbar {
+        display: none !important;
+    }
+    .hero-image-scroller {
+        -ms-overflow-style: none !important;  
+        scrollbar-width: none !important;  
+    }
+
+    .hero-showcase-container .scroller-slide {
+        flex: 0 0 450px !important; 
+        width: 450px !important;
+        height: 100% !important;
+        scroll-snap-align: start !important; 
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        border-right: 1px solid rgba(255,255,255,0.02) !important;
+    }
+
+    /* Standard Lookbook Images */
+    .hero-showcase-container .scroller-slide img {
+        max-width: 100% !important;
+        height: 86% !important; 
+        width: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* ==========================================
+       FIXED & CLEAN INTERACTIVE VIDEO STYLING
+       ========================================== */
+    /* ==========================================
+       ROBUST OVERLAY VIDEO ENGINE
+       ========================================== */
+    .hero-showcase-container .interactive-model-card {
+        position: relative !important;
+        width: 100% !important;
+        height: 86% !important; /* Locks onto your exact 86% layout height */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+    }
+
+    /* The static image always stays underneath as a beautiful baseline safety net */
+    .hero-showcase-container .interactive-model-card .model-static-img {
+        position: relative !important;
+        z-index: 1 !important;
+        height: 100% !important;
+        width: auto !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+    }
+
+    /* The video sits directly on top of the image */
+/* Position the video perfectly underneath the photo layer */
+    .hero-showcase-container .model-hover-video {
+        position: absolute !important;
+        top: 0 !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        height: 100% !important;
+        width: auto !important;
+        aspect-ratio: 9 / 16 !important;
+        object-fit: contain !important;
+        z-index: 2 !important;
+        opacity: 0 !important;
+        transition: opacity 0.5s ease-in-out !important;
+        
+        /* 🔥 THE CORRECT BLACK VOID UNIFICATION TRICK */
+        mix-blend-mode: screen !important; /* Discards the dark gray background pixels */
+        filter: contrast(1.3) brightness(0.9) !important; /* Safely crushes the video's near-black background floor down to absolute zero */
+    }
+
+    /* 🔥 HOVER CARDS (Slide 2 onwards): Show video on mouse point */
+    .hero-showcase-container .interactive-model-card:not(.auto-loop):hover .model-hover-video {
+        opacity: 1 !important;
+    }
+
+    /* 🔥 AUTO-LOOP CARDS (Slide 1): Show video instantly when playing */
+    .hero-showcase-container .interactive-model-card.auto-loop .model-hover-video.is-playing {
+        opacity: 1 !important;
+    }
+
+    /* Interactive Hover Mechanics */
+    .hero-showcase-container .interactive-model-card:hover .model-static-img {
+        opacity: 0 !important;
+    }
+    .hero-showcase-container .interactive-model-card:hover .model-hover-video {
+        opacity: 1 !important;
+    }
+
+    /* Auto-looping First Card Mechanics */
+    .hero-showcase-container .interactive-model-card.auto-loop .model-static-img {
+        opacity: 0 !important;
+    }
+    .hero-showcase-container .interactive-model-card.auto-loop .model-hover-video {
+        opacity: 1 !important;
+    }
+
+    /* 5. Mobile Responsive Configuration */
+    @media (max-width: 900px) {
+        .hero-showcase-container { flex-direction: column !important; height: auto !important; }
+        .hero-showcase-container .hero-brand-panel { width: 100% !important; flex: 0 0 auto !important; padding: 3rem 2rem !important;}
+        .hero-showcase-container .hero-image-scroller { width: 100% !important; height: 60vh !important; }
+    }
+</style>
+
+<section class="hero-showcase-container">
+    <div class="hero-brand-panel">
+        <div class="panel-content">
+            <div class="brand-logo-wrapper">
+                <img src="assets/edits/logo.png" alt="DEEVYA Logo" class="panel-logo-img">
+            </div>
+            
+            <p class="brand-subtitle">DIGITAL COUTURE</p>
+            <p class="brand-description">
+                Deevya is a digital couture label specializing in modern couple fashion defined by editorial luxury and sensual sophistication. Each collection focuses heavily on contemporary design and bold silhouettes, balanced by a subtle whisper of traditional influence to create timeless pieces for the modern virtual wardrobe.
+            </p>
+            
+            <div class="swipe-indicator">
+                <span>SWIPE TO EXPLORE LOOKS</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-image-scroller">
+        <!-- 🔥 SLIDE 1: AUTOMATICALLY LOOPS YOUR NEW 9:16 VIDEO CLIP -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card auto-loop">
+                <img src="assets/edits/model1.png" alt="Deevya Look 1" class="model-static-img">
+                <video class="model-hover-video" autoplay loop muted="true"playsinline>
+                    <source src="assets/edits/model1_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model2.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model2_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model3.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model3_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+          <!-- SLIDE 4: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model4.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model5_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+          <!-- SLIDE 5: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model5.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model4_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+           <!-- SLIDE 6: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model6.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model6_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+       <!-- SLIDE 7: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model7.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model8_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+       <!-- SLIDE 6: STANDARD INTERACTIVE HOVER (Fades into video on hover) -->
+        <div class="scroller-slide">
+            <div class="interactive-model-card">
+                <img src="assets/edits/model8.png" alt="Deevya Look 2" class="model-static-img">
+                <video class="model-hover-video" loop muted="true"playsinline>
+                    <source src="assets/edits/model7_walking.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+      
+</section>
+<main>
+</section>
+
+<main>
+<!-- ==========================================
+             CAPSULE I: SUMMER 2026 SHOW (HIGHLIGHT EVENT)
+             ========================================== -->
+        <h2 id="summer-show" class="collection-heading">UPCOMING EVENT // SUMMER SHOW</h2>
+        <section class="product-carousel">
+            
+            <!-- ==========================================
+                 THEME 1: ISLAND GOLD & GLOW
+                 ========================================== -->
+
+            <!-- LOOK 1: ISLAND GOLD (COUPLE SET) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/island-gold-couple.png"
+                    
+                    g" alt="Island Gold Couple Set" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>01 / ISLAND GOLD // COUPLE BUNDLE</h3>
+                        <p>Sun-kissed matching luxury pieces blending raw gold embroidery with fluid, crochet draped resort styling. Perfect for iconic couple portraits.</p>
+                    </div>
+                    <div class="bundle-buttons">
+                        <a href="https://www.imvu.com/shop/product.php?products_id=75254792" target="_blank" class="buy-button half-btn">MALE LOOK ↗</a>
+                        <a href="https://www.imvu.com/shop/product.php?products_id=75254645" target="_blank" class="buy-button half-btn">FEMALE LOOK ↗</a>
+                    </div>
+                </div>
+            </div>
+
+        <!-- LOOK 2: ISLAND X GLOW (FEMALE LOOK 1) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/island-glow-fem1.png" alt="Island X Glow Female Look 1" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>02 / ISLAND X GLOW // ALLURE SILHOUETTE</h3>
+                        <p>Pure allure. A revealing, high-fashion statement piece featuring a dangerously low-slung draped wrap that creates a sharp, severe waistline. Designed to catch dramatic sunset rim lighting across exposed skin.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75207949" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 3: ISLAND X GLOW (FEMALE LOOK 2) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/island-glow-fem2.png" alt="Island X Glow Female Look 2" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>03 / ISLAND X GLOW // SEVERE LINES</h3>
+                        <p>An editorial look engineered for maximum impact. A strikingly minimalist, revealing shell top  paired with an ultra-low fluid maxi skirt texture that accentuates a fierce and dramatic virtual silhouette.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75208734" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+
+            <!-- ==========================================
+                 THEME 2: FLEUR X BLUSH COLLECTION
+                 ========================================== -->
+
+            <!-- LOOK 4: FLEUR X BLUSH (FEMALE LOOK 1) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/fleur-blush-fem1.png" alt="Fleur x Blush Female Look 1" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>04 / NAMI X BLUSH // EDITORIAL I</h3>
+                        <p>The design features a flattering one-shoulder wrap top paired with a mini draped skirt that flows gracefully with every step. Delicate yet bold, this look is perfect for beach clubs, sunset dinners, and luxurious island escapes.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75188178" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 5: FLEUR X BLUSH (FEMALE LOOK 2) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/fleur-blush-fem2.png" alt="Fleur x Blush Female Look 2" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>05 / NAMI X FLEUR // EDITORIAL II</h3>
+                        <p>Featuring a thin bralette adorned with a floral-inspired (fleur) motif and a mini draped skirt, this set creates a light, graceful silhouette while highlighting effortless femininity</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75186017" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 6: FLEUR & BLUSH (FEMALE LOOK 3) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/fleur-blush-fem3.png" alt="Fleur x Blush Female Look 3" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>06 / NAMI FLEUR BLUSH</h3>
+                        <p>features a beautifully draped fleur bustier top paired with a flowing blush-colored skirt. Inspired by blooming coastal gardens and warm Mediterranean sunsets.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75196575" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 7: FLEUR & BLUSH (FEMALE LOOK 4) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/fleur-blush-fem4.png" alt="Fleur x Blush Female Look 4" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>07 / NAMI FLEUR BLUSH</h3>
+                        <p>Designed to celebrate bold femininity, Nami Fleur Set features a delicate floral-inspired bustier paired with a blushmini draped open skirt.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75195986" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+
+            <!-- ==========================================
+                 THEME 3: LEMON DROP
+                 ========================================== -->
+
+            <!-- LOOK 8: ZEST SEDUCE (FEMALE LOOK) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/zest-seduce.png" alt="Zest Seduce Female Look" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>08 / LEMON DROP // ZEST SEDUCE</h3>
+                        <p>Reveal just enough. A delicate sling monokini in lemon eyelet fabric paired with a sheer open-back robe, designed to tease, tempt, and own the summer.Turn heads in a playful sling bikini crafted from delicate lemon eyelet fabric, paired with a sheer open-back robe that flows with every step. Sweet at first glance, impossible to forget.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75273593" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 9: LUSH CITRINE (FEMALE LOOK) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/lush-citrine.png" alt="Lush Citrine Female Look" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>09 / LEMON DROP // LUSH CITRINE</h3>
+                        <p>Lush Citrine Dress features a delicate cropped bralette with a tie-back design, paired with a flowing below-the-knee skirt crafted from soft eyelet floral fabric.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75273593" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+        </section>
+
+        <hr class="section-divider">
+<!-- ==========================================
+             CAPSULE II: CROWNED COUTURE (ROYAL & DESI WEAR)
+             ========================================== -->
+        <h2 id="crowned-couture" class="collection-heading">CROWNED COUTURE // CINEMATIC & MODERN LUXURY</h2>
+        <section class="product-carousel">
+            
+            <!-- LOOK 1: THE MOVIE-INSPIRED DANCE SET (COUPLE BUNDLE) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/dance.png" alt="Cinematic Desi Dance Couple Set" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>01 / CINEMATIC ROMANCE // DANCE EDITION</h3>
+                        <p>Inspired by iconic silver-screen choreography. Features an exquisite teal and magenta lehenga woven with intricate geometric gold-thread patterns that catch light beautifully mid-motion, paired with a effortlessly styled, coordinated male look. Engineered for high-contrast dramatic lighting.</p>
+                    </div>
+                    <div class="bundle-buttons">
+                        <a href="https://www.imvu.com/shop/product.php?products_id=75034101" target="_blank" class="buy-button half-btn">MALE LOOK ↗</a>
+                        <a href="https://www.imvu.com/shop/product.php?products_id=75032051" target="_blank" class="buy-button half-btn">FEMALE LOOK ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOOK 2: THE AFSANA LEHENGA (SOLO LOOK) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/afsana.png" alt="Afsana Modern Lehenga" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>02 / AFSANA // THE MODERN LEHENGA</h3>
+                        <p>A striking fusion of traditional heritage textiles and contemporary, fierce styling. Rich, warm terracotta and crimson patterns wrap seamlessly across a voluminous structural skirt, balanced perfectly by a sleek, minimalist modern blouse texture. Pure editorial elegance.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=75082093" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+        </section>
+
+        <hr class="section-divider">
+
+       
+        <!-- ==========================================
+             CAPSULE III: EDITORIAL & NOIR
+             ========================================== -->
+        <h2 id="editorial" class="collection-heading">EDITORIAL & NOIR // AVANT-GARDE CONCEPT</h2>
+        <section class="product-carousel">
+            
+            <!-- LOOK 1: SKULL COUTURE CONCEPT -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/skull-couture.png" alt="Deevya Skull Couture Look" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>01 / SKULL COUTURE CONCEPT</h3>
+                        <p>High-fashion avant-garde styling featuring dark structural textures, intricate skeletal motifs, and sharp, dramatic runway lighting accents.</p>
+                    </div>
+                    <a href="https://www.imvu.com/shop/product.php?products_id=74980570" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+                </div>
+            </div>
+
+            <!-- LOOK 2: NOIR SIN COUTURE (MALE/FEMALE BUNDLE) -->
+            <div class="product-card">
+                <div class="image-wrapper">
+                    <img src="assets/edits/noir-mafia.png" alt="Noir Sin Couture Mafia Wedding Look" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="meta">
+                        <h3>02 / NOIR SIN COUTURE</h3>
+                        <p>Dark romance meets dangerous elegance. A powerful, high-contrast gothic wedding aesthetic featuring sharp tailoring, exquisite lace details, and a fierce underground majesty.</p>
+                    </div>
+                    <!-- Dual Buttons for the Couple Bundle -->
+                    <div class="bundle-buttons">
+                        <a href="https://www.imvu.com/shop/product.php?products_id=74816493" target="_blank" class="buy-button half-btn">MALE LOOK ↗</a>
+                        <a href="https://www.imvu.com/shop/product.php?products_id=74703986" target="_blank" class="buy-button half-btn">FEMALE LOOK ↗</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        </section>
+
+    </main>
+    
+    <!-- Brand Footer -->
+    <footer>
+        <p>&copy; 2026 Deevya Digital Apparel. All Rights Reserved.</p>
+    </footer>
+
+
+<script>
+document.querySelectorAll('.interactive-model-card').forEach(card => {
+    const video = card.querySelector('.model-hover-video');
+    if (!video) return;
+
+    // 🔥 AUTOMATIC LOOP SETUP (Slide 1)
+    if (card.classList.contains('auto-loop')) {
+        // Force the video to play immediately on page load
+        video.play().then(() => {
+            video.classList.add('is-playing'); // Fades video up over the fallback photo safely
+        }).catch(error => {
+            console.log("Autoplay prevented by browser, waiting for user scroll activity:", error);
+            
+            // Backup fallback: Play as soon as the user interacts or scrolls the page
+            const playOnInteraction = () => {
+                video.play().then(() => {
+                    video.classList.add('is-playing');
+                    window.removeEventListener('scroll', playOnInteraction);
+                    window.removeEventListener('click', playOnInteraction);
+                });
+            };
+            window.addEventListener('scroll', playOnInteraction);
+            window.addEventListener('click', playOnInteraction);
+        });
+        return;
+    }
+
+    // 🔥 HOVER TRIGGER SETUP (Slide 2)
+    card.addEventListener('mouseenter', () => {
+        video.play();
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0; // Instantly winds back to the first frame
+    });
+});
+</script>
+</body>
+</html>
