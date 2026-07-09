@@ -244,12 +244,21 @@ html, body {
     height: auto !important;
   }
 
-  /* Keep the panel block visible but remove heavy desktop padding */
+  /* Keep the panel block visible but remove heavy desktop padding.
+     align-items is now centered so the panel content — not just the
+     logo inside it — actually centers on the screen instead of
+     hugging the left edge. */
   .hero-showcase-container .hero-brand-panel {
     width: 100% !important;
     flex: 0 0 auto !important;
     padding: 2rem 1rem !important;
     background: #050505 !important;
+    align-items: center !important;
+  }
+
+  .hero-showcase-container .panel-content {
+    width: 100% !important;
+    align-items: center !important;
   }
 
   /* HIDE the description text and 'swipe to explore' on mobile */
@@ -787,6 +796,18 @@ if (prefersReducedMotion) {
     btn.addEventListener('mouseleave', () => {
       gsap.to(btn, { y: 0, scale: 1, duration: 0.4, ease: 'power2.out' });
     });
+  });
+}
+
+// ==========================================================================
+// CURSOR-REACTIVE GOLD GLOW (Brand Panel)
+// ==========================================================================
+const brandPanel = document.querySelector('.hero-brand-panel');
+if (brandPanel) {
+  brandPanel.addEventListener('mousemove', (e) => {
+    const rect = brandPanel.getBoundingClientRect();
+    brandPanel.style.setProperty('--glow-x', ((e.clientX - rect.left) / rect.width) * 100 + '%');
+    brandPanel.style.setProperty('--glow-y', ((e.clientY - rect.top) / rect.height) * 100 + '%');
   });
 }
 </script>
