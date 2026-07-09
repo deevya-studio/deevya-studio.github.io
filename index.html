@@ -38,7 +38,7 @@ html, body {
   flex-direction: row !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: #0a0a0a !important;
+  background: #000000 !important;
   position: relative !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
@@ -80,6 +80,45 @@ html, body {
   width: 100% !important;
   height: auto !important;
   object-fit: contain !important;
+}
+
+/* Logo animation: floating bob + soft pulsing glow.
+   Runs on both desktop and mobile since it's outside the @media block. */
+.hero-showcase-container .brand-logo-wrapper {
+  position: relative !important;
+}
+
+/* Pulsing gold glow behind the logo */
+.hero-showcase-container .brand-logo-wrapper::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 140% !important;
+  height: 140% !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  background: radial-gradient(circle, rgba(212,175,55,0.28) 0%, rgba(212,175,55,0) 70%) !important;
+  filter: blur(14px) !important;
+  z-index: 0 !important;
+  animation: logoGlowPulse 4s ease-in-out infinite !important;
+  pointer-events: none !important;
+}
+
+/* Gentle floating bob on the logo image itself */
+.hero-showcase-container .panel-logo-img {
+  position: relative !important;
+  z-index: 1 !important;
+  animation: logoFloat 4.5s ease-in-out infinite !important;
+}
+
+@keyframes logoGlowPulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.92); }
+  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
 }
 
 /* Editorial Typography styling */
@@ -130,12 +169,21 @@ html, body {
   display: flex !important;
   flex-direction: row !important;
   height: 100% !important;
-  background: #0d0d0d !important;
+  background: #000000 !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-snap-type: x mandatory !important;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth !important;
+}
+
+/* Every layer in the model card stack forced to the same solid black,
+   so there's no visible seam around the image/video at any screen size */
+.hero-showcase-container .scroller-slide,
+.hero-showcase-container .interactive-model-card,
+.hero-showcase-container .model-static-img,
+.hero-showcase-container .model-hover-video {
+  background: #000000 !important;
 }
 
 /* Hide the native browser scrollbar track */
@@ -284,6 +332,13 @@ html, body {
   .hero-showcase-container .hero-image-scroller {
     width: 100% !important;
     height: 75vh !important; /* Set to 75% screen height so everything fits perfectly */
+  }
+
+  /* One model per swipe on mobile — the 450px desktop slide width was
+     causing the next model to peek in on narrow screens */
+  .hero-showcase-container .scroller-slide {
+    flex: 0 0 100% !important;
+    width: 100% !important;
   }
 }
 </style>

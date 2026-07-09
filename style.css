@@ -128,7 +128,7 @@ nav a:hover {
    ========================================================================== */
 .collection-heading {
   font-family: 'Bodoni Moda', serif;
-  font-style: italic;
+  font-style: normal; /* Was italic — switched to normal per brand preference */
   font-weight: 500;
   font-size: 1.1rem;
   letter-spacing: 6px;
@@ -448,4 +448,60 @@ body::after {
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ==========================================================================
+   10. CURSOR GLOW + NAV UNDERLINE
+   ========================================================================== */
+
+/* Soft gold spotlight that follows the cursor inside the brand panel.
+   Position is driven by --glow-x / --glow-y, set via mousemove in the
+   <script> at the bottom of index.html. Falls back to a fixed spot
+   (30%, 30%) if JS hasn't run yet. */
+.hero-brand-panel {
+  position: relative;
+  overflow: hidden;
+}
+.hero-brand-panel::before {
+  content: "";
+  position: absolute;
+  top: var(--glow-y, 30%);
+  left: var(--glow-x, 30%);
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.hero-brand-panel:hover::before {
+  opacity: 1;
+}
+/* Keeps the logo/text above the glow layer */
+.hero-brand-panel .panel-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Gold underline that slides in under nav links on hover */
+nav a {
+  position: relative;
+}
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: #d4af37;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
