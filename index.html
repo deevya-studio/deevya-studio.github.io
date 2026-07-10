@@ -13,9 +13,17 @@
 <header>
   <div class="logo">DEEVYA</div>
   <nav>
-    <a href="#summer-show">SUMMER 2026</a>
-    <a href="#crowned-couture">CROWNED COUTURE</a>
-    <a href="#editorial">EDITORIAL & NOIR</a>
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-trigger" aria-expanded="false" aria-controls="collections-panel">
+        COLLECTIONS
+        <span class="nav-caret" aria-hidden="true"></span>
+      </button>
+      <div class="nav-dropdown-panel" id="collections-panel">
+        <a href="#summer-show">Summer 2026</a>
+        <a href="#crowned-couture">Crowned Couture</a>
+        <a href="#editorial">Editorial &amp; Noir</a>
+      </div>
+    </div>
     <a href="https://www.imvu.com/next/av/Deevya/" target="_blank" class="shop-all-btn">VIEW FULL SHOP</a>
   </nav>
 </header>
@@ -104,11 +112,16 @@ html, body {
   pointer-events: none !important;
 }
 
-/* Gentle floating bob on the logo image itself */
+/* Gentle floating bob on the logo image — now driven by GSAP (see script
+   at the bottom of index.html), not a CSS @keyframes animation. The old
+   CSS animation would have fought with GSAP for control of `transform`
+   once we added the mouse-tilt effect, since CSS animations win that
+   fight and silently override anything GSAP writes to the same element. */
 .hero-showcase-container .panel-logo-img {
   position: relative !important;
   z-index: 1 !important;
-  animation: logoFloat 4.5s ease-in-out infinite !important;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 @keyframes logoGlowPulse {
@@ -116,9 +129,9 @@ html, body {
   50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
 }
 
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+/* Perspective for the mouse-reactive 3D tilt on the logo */
+.hero-showcase-container .brand-logo-wrapper {
+  perspective: 600px;
 }
 
 /* Editorial Typography styling */
@@ -677,6 +690,40 @@ html, body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
+// ==========================================================================
+// COLLECTIONS DROPDOWN
+// ==========================================================================
+(() => {
+  const dropdown = document.querySelector('.nav-dropdown');
+  const trigger = document.querySelector('.nav-dropdown-trigger');
+  if (!dropdown || !trigger) return;
+
+  const closeDropdown = () => {
+    dropdown.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  };
+  const openDropdown = () => {
+    dropdown.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+  };
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.contains('is-open') ? closeDropdown() : openDropdown();
+  });
+
+  // Close when picking a collection, when clicking anywhere else, or on Escape
+  dropdown.querySelectorAll('.nav-dropdown-panel a').forEach(link => {
+    link.addEventListener('click', closeDropdown);
+  });
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) closeDropdown();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDropdown();
+  });
+})();
+
 document.querySelectorAll('.interactive-model-card').forEach(card => {
   const video = card.querySelector('.model-hover-video');
   if (!video) return;
@@ -725,6 +772,7 @@ if (prefersReducedMotion) {
   // animated case, so we override that explicitly here).
   gsap.set('.letterbox-bar', { height: 'var(--letterbox-h)' });
   gsap.set('.panel-content > *, .scroller-slide, .collection-heading', { opacity: 1, y: 0, x: 0 });
+  gsap.set('.panel-logo-img', { scale: 1, rotateY: 0, y: 0 });
   gsap.set('.product-card', { opacity: 1, y: 0, scale: 1 });
   gsap.set('.section-divider', { scaleX: 1 });
 } else {
@@ -738,6 +786,15 @@ if (prefersReducedMotion) {
     .set('.letterbox-bar.bottom', { height: '50vh' })
     .to('.letterbox-bar.top', { height: 'var(--letterbox-h)', duration: 1.5 }, 0)
     .to('.letterbox-bar.bottom', { height: 'var(--letterbox-h)', duration: 1.5 }, 0)
+
+    // --- 1b. LOGO: its own dramatic reveal, layered on top of the generic
+    //          panel fade below — a confident pop-in with a slight tilt
+    //          settle, instead of just fading with everything else. ---
+    .fromTo('.panel-logo-img',
+      { scale: 0.82, rotateY: -18 },
+      { scale: 1, rotateY: 0, duration: 1.3, ease: 'power4.out' },
+      0.6
+    )
 
     // --- 2. BRAND PANEL: logo, subtitle, description, swipe cue stagger up ---
     .to('.panel-content > *', {
@@ -754,7 +811,16 @@ if (prefersReducedMotion) {
       { opacity: 0, y: 40 },
       { opacity: 1, y: 0, duration: 1, stagger: 0.12, ease: 'power2.out' },
       0.9
-    );
+    )
+
+    // --- 1c. LOGO IDLE: once it's landed, start a slow continuous float ---
+    .to('.panel-logo-img', {
+      y: -8,
+      duration: 2.6,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true
+    });
 
   // --- 4. SECTION HEADINGS: fade/rise in on scroll, then draw the
   //        accent line out to the right ---
@@ -855,14 +921,37 @@ if (prefersReducedMotion) {
 }
 
 // ==========================================================================
-// CURSOR-REACTIVE GOLD GLOW (Brand Panel)
+// CURSOR-REACTIVE GOLD GLOW (Brand Panel) + LOGO 3D TILT
 // ==========================================================================
 const brandPanel = document.querySelector('.hero-brand-panel');
+const logoImgEl = document.querySelector('.panel-logo-img');
+
 if (brandPanel) {
   brandPanel.addEventListener('mousemove', (e) => {
     const rect = brandPanel.getBoundingClientRect();
-    brandPanel.style.setProperty('--glow-x', ((e.clientX - rect.left) / rect.width) * 100 + '%');
-    brandPanel.style.setProperty('--glow-y', ((e.clientY - rect.top) / rect.height) * 100 + '%');
+    const relX = (e.clientX - rect.left) / rect.width;
+    const relY = (e.clientY - rect.top) / rect.height;
+
+    brandPanel.style.setProperty('--glow-x', relX * 100 + '%');
+    brandPanel.style.setProperty('--glow-y', relY * 100 + '%');
+
+    // The logo tilts subtly toward the cursor, like it's catching light —
+    // small enough to feel premium rather than gimmicky.
+    if (logoImgEl && typeof gsap !== 'undefined') {
+      gsap.to(logoImgEl, {
+        rotateY: (relX - 0.5) * 20,
+        rotateX: (0.5 - relY) * 14,
+        duration: 0.6,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+  });
+
+  brandPanel.addEventListener('mouseleave', () => {
+    if (logoImgEl && typeof gsap !== 'undefined') {
+      gsap.to(logoImgEl, { rotateX: 0, rotateY: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+    }
   });
 }
 </script>
