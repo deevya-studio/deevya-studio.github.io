@@ -96,20 +96,29 @@ html, body {
   position: relative !important;
 }
 
-/* Pulsing gold glow behind the logo */
+/* Gold glow behind the logo — now dormant at rest and only appears as a
+   subtle accent when you hover the logo. The old always-on pulsing
+   version was the actual cause of the "not elegant" look: it kept a
+   warm blurred haze sitting behind the crown constantly, muddying the
+   fine gold linework in the logo itself instead of complementing it. */
 .hero-showcase-container .brand-logo-wrapper::before {
   content: "" !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
-  width: 140% !important;
-  height: 140% !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-  background: radial-gradient(circle, rgba(212,175,55,0.28) 0%, rgba(212,175,55,0) 70%) !important;
-  filter: blur(14px) !important;
+  width: 120% !important;
+  height: 120% !important;
+  transform: translate(-50%, -50%) !important;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0) 70%) !important;
+  filter: blur(10px) !important;
   z-index: 0 !important;
-  animation: logoGlowPulse 4s ease-in-out infinite !important;
+  opacity: 0 !important;
+  transition: opacity 0.6s ease !important;
   pointer-events: none !important;
+}
+
+.hero-showcase-container .brand-logo-wrapper:hover::before {
+  opacity: 1 !important;
 }
 
 /* Gentle floating bob on the logo image — now driven by GSAP (see script
@@ -122,16 +131,6 @@ html, body {
   z-index: 1 !important;
   transform-style: preserve-3d;
   will-change: transform;
-}
-
-@keyframes logoGlowPulse {
-  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.92); }
-  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
-}
-
-/* Perspective for the mouse-reactive 3D tilt on the logo */
-.hero-showcase-container .brand-logo-wrapper {
-  perspective: 600px;
 }
 
 /* Editorial Typography styling */
@@ -772,7 +771,7 @@ if (prefersReducedMotion) {
   // animated case, so we override that explicitly here).
   gsap.set('.letterbox-bar', { height: 'var(--letterbox-h)' });
   gsap.set('.panel-content > *, .scroller-slide, .collection-heading', { opacity: 1, y: 0, x: 0 });
-  gsap.set('.panel-logo-img', { scale: 1, rotateY: 0, y: 0 });
+  gsap.set('.panel-logo-img', { scale: 1, scaleX: 1, scaleY: 1, y: 0 });
   gsap.set('.product-card', { opacity: 1, y: 0, scale: 1 });
   gsap.set('.section-divider', { scaleX: 1 });
 } else {
@@ -787,14 +786,28 @@ if (prefersReducedMotion) {
     .to('.letterbox-bar.top', { height: 'var(--letterbox-h)', duration: 1.5 }, 0)
     .to('.letterbox-bar.bottom', { height: 'var(--letterbox-h)', duration: 1.5 }, 0)
 
-    // --- 1b. LOGO: its own dramatic reveal, layered on top of the generic
-    //          panel fade below — a confident pop-in with a slight tilt
-    //          settle, instead of just fading with everything else. ---
+    // --- 1b. LOGO: playful squash-and-stretch entrance — it overshoots
+    //          a little, wobbles like it's landing on something bouncy,
+    //          then settles. Less "premium and still", more "hi there!"
+    //          Scale only — no rotation. ---
     .fromTo('.panel-logo-img',
-      { scale: 0.82, rotateY: -18 },
-      { scale: 1, rotateY: 0, duration: 1.3, ease: 'power4.out' },
+      { scale: 0.6 },
+      { scale: 1.08, duration: 0.55, ease: 'power2.out' },
       0.6
     )
+    .to('.panel-logo-img', {
+      scaleX: 0.94,
+      scaleY: 1.1,
+      duration: 0.16,
+      ease: 'power1.inOut'
+    })
+    .to('.panel-logo-img', {
+      scale: 1,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 0.6,
+      ease: 'elastic.out(1, 0.4)'
+    })
 
     // --- 2. BRAND PANEL: logo, subtitle, description, swipe cue stagger up ---
     .to('.panel-content > *', {
@@ -813,7 +826,8 @@ if (prefersReducedMotion) {
       0.9
     )
 
-    // --- 1c. LOGO IDLE: once it's landed, start a slow continuous float ---
+    // --- 1c. LOGO IDLE: a slow continuous float — scale/position only,
+    //          no rotation. ---
     .to('.panel-logo-img', {
       y: -8,
       duration: 2.6,
@@ -935,14 +949,13 @@ if (brandPanel) {
     brandPanel.style.setProperty('--glow-x', relX * 100 + '%');
     brandPanel.style.setProperty('--glow-y', relY * 100 + '%');
 
-    // The logo tilts subtly toward the cursor, like it's catching light —
-    // small enough to feel premium rather than gimmicky.
+    // The logo scales up slightly toward the cursor with a springy snap —
+    // no tilt anymore, just a confident little "grow" reaction.
     if (logoImgEl && typeof gsap !== 'undefined') {
       gsap.to(logoImgEl, {
-        rotateY: (relX - 0.5) * 20,
-        rotateX: (0.5 - relY) * 14,
-        duration: 0.6,
-        ease: 'power2.out',
+        scale: 1.08,
+        duration: 0.5,
+        ease: 'back.out(2)',
         overwrite: 'auto'
       });
     }
@@ -950,7 +963,58 @@ if (brandPanel) {
 
   brandPanel.addEventListener('mouseleave', () => {
     if (logoImgEl && typeof gsap !== 'undefined') {
-      gsap.to(logoImgEl, { rotateX: 0, rotateY: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+      gsap.to(logoImgEl, {
+        scale: 1,
+        duration: 0.9,
+        ease: 'elastic.out(1, 0.45)',
+        overwrite: 'auto'
+      });
+    }
+  });
+}
+
+// ==========================================================================
+// LOGO CLICK: a little gold spark burst, playful "hi!" moment
+// ==========================================================================
+const logoWrapperEl = document.querySelector('.brand-logo-wrapper');
+if (logoWrapperEl && logoImgEl) {
+  logoWrapperEl.style.cursor = 'pointer';
+  logoWrapperEl.addEventListener('click', () => {
+    // Quick playful squash-bounce on the mark itself
+    gsap.timeline()
+      .to(logoImgEl, { scale: 0.85, duration: 0.12, ease: 'power1.in' })
+      .to(logoImgEl, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.35)' });
+
+    // A handful of small gold sparks fly outward and fade
+    const sparkCount = 10;
+    for (let i = 0; i < sparkCount; i++) {
+      const spark = document.createElement('span');
+      spark.style.cssText = `
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: #d4af37;
+        pointer-events: none;
+        z-index: 5;
+      `;
+      logoWrapperEl.appendChild(spark);
+
+      const angle = (Math.PI * 2 * i) / sparkCount + Math.random() * 0.4;
+      const distance = 50 + Math.random() * 40;
+
+      gsap.fromTo(spark,
+        { x: 0, y: 0, opacity: 1, scale: 1 },
+        {
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance,
+          opacity: 0,
+          scale: 0.3,
+          duration: 0.7 + Math.random() * 0.3,
+          ease: 'power2.out',
+          onComplete: () => spark.remove()
+        }
+      );
     }
   });
 }
