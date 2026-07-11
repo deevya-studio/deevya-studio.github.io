@@ -332,8 +332,10 @@ html, body {
     display: none !important;
   }
 
-  /* PUSH and center the logo beautifully at the top */
-  .hero-brand-panel img {
+  /* PUSH and center the logo beautifully at the top
+     (targets .panel-logo-img by class now, not the `img` tag — that way
+     it still matches now that the logo is a <video> element, not an <img>) */
+  .hero-brand-panel .panel-logo-img {
     display: block !important;
     margin-top: 20px !important; /* Pushes logo down away from top nav */
     margin-bottom: 10px !important; /* Space below logo */
