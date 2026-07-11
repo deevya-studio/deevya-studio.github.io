@@ -87,6 +87,9 @@ html, body {
 .hero-showcase-container .panel-logo-img {
   width: 100% !important;
   height: auto !important;
+  aspect-ratio: 1 / 1; /* matches the video's native 480x480 — keeps the
+    box a stable size before the video's metadata has loaded, so nothing
+    jumps around on page load */
   object-fit: contain !important;
 }
 
@@ -361,7 +364,18 @@ html, body {
   <div class="hero-brand-panel">
     <div class="panel-content">
       <div class="brand-logo-wrapper">
-        <img src="assets/edits/logo.png" alt="DEEVYA Logo" class="panel-logo-img">
+        <video
+          class="panel-logo-img"
+          autoplay
+          muted
+          loop
+          playsinline
+          poster="assets/edits/logo-poster.jpg"
+        >
+          <source src="assets/edits/logo-animated.mp4" type="video/mp4">
+          <!-- Fallback for anything that can't play video at all -->
+          <img src="assets/edits/logo.png" alt="DEEVYA Logo">
+        </video>
       </div>
       <p class="brand-subtitle">DIGITAL COUTURE</p>
       <p class="brand-description">
