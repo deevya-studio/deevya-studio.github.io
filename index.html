@@ -24,6 +24,7 @@
         <a href="#editorial">Editorial &amp; Noir</a>
       </div>
     </div>
+    <a href="#finale-banner">ABOUT</a>
     <a href="https://www.imvu.com/next/av/Deevya/" target="_blank" class="shop-all-btn">VIEW FULL SHOP</a>
   </nav>
 </header>
@@ -37,7 +38,10 @@ html, body {
   background: #050505 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  scroll-behavior: smooth !important;
+  /* scroll-behavior: smooth removed — Lenis now owns scroll physics.
+     Having both the native smooth-scroll engine and Lenis running at
+     once is a classic cause of stutter/glitch, since they can both try
+     to reposition scroll on the same frame. */
 }
 
 /* 2. Main Hero Container Frame */
@@ -794,6 +798,40 @@ html, body {
   </section>
 </main>
 
+<!-- ==========================================================================
+     FINALE RUNWAY BANNER — full capsule reveal shot, with the brand
+     tagline flying in from the left/right margins (never overlapping
+     the garments themselves). On mobile, where there's no side margin
+     to work with, the lines instead sit centered on top of the image.
+     ========================================================================== -->
+<section class="finale-banner" id="finale-banner">
+  <div class="finale-bg">
+    <video class="finale-bg-video" autoplay loop muted playsinline>
+      <source src="assets/edits/final-runway.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="finale-overlay"></div>
+
+  <div class="finale-text">
+    <p class="finale-line finale-line-bloom">Bloom Louder.</p>
+    <p class="finale-line finale-line-wear">Wear Bolder.</p>
+    <p class="finale-line finale-line-love">Love Deeper.<span class="finale-shimmer-sweep"></span></p>
+    <a href="https://www.imvu.com/next/av/Deevya/" target="_blank" class="finale-line finale-line-cta finale-line-link">Discover DEEVYA.</a>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     ORBIT LOGO BANNER — solid black section, the 3D animated logo loop
+     centered and fading/scaling in once on scroll into view, then just
+     plays continuously. No text — kept deliberately quiet after the
+     runway banner's taglines right above it.
+     ========================================================================== -->
+<section class="orbit-logo-banner" id="orbit-logo-banner">
+  <video class="orbit-logo-video" autoplay loop muted playsinline>
+    <source src="assets/edits/deevya-orbit-3d.mp4" type="video/mp4">
+  </video>
+</section>
+
 <!-- Brand Footer -->
 <footer>
   <p>&copy; 2026 Deevya Digital Apparel. All Rights Reserved.</p>
@@ -862,23 +900,31 @@ document.querySelectorAll('.interactive-model-card').forEach(card => {
     return;
   }
 
-  // HOVER TRIGGER SETUP (Slide 2+, mouse users)
+  // HOVER TRIGGER (desktop/mouse only) — skipped entirely on touch
+  // devices. Having both a mouseenter listener AND a click listener on
+  // the same element is exactly what causes the iOS/Android "first tap
+  // = hover, second tap = click" quirk — this was the cause of needing
+  // to tap twice on mobile.
   const staticImg = card.querySelector('.model-static-img');
-  card.addEventListener('mouseenter', () => {
-    video.play();
-    video.classList.add('is-playing');
-    staticImg?.classList.add('is-hidden');
-  });
-  card.addEventListener('mouseleave', () => {
-    video.pause();
-    video.currentTime = 0; // Instantly winds back to the first frame
-    video.classList.remove('is-playing');
-    staticImg?.classList.remove('is-hidden');
-  });
+  const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  // CLICK/TAP TRIGGER (Slide 2+, matches the "TAP TO WALK" hint and is
-  // what actually makes this work on touch devices, since they have no
-  // hover state to fall back on)
+  if (supportsHover) {
+    card.addEventListener('mouseenter', () => {
+      video.play();
+      video.classList.add('is-playing');
+      staticImg?.classList.add('is-hidden');
+    });
+    card.addEventListener('mouseleave', () => {
+      video.pause();
+      video.currentTime = 0; // Instantly winds back to the first frame
+      video.classList.remove('is-playing');
+      staticImg?.classList.remove('is-hidden');
+    });
+  }
+
+  // CLICK/TAP TRIGGER (Slide 2+, matches the "TAP TO WALK" hint) — the
+  // single source of truth on touch devices, so one tap now toggles
+  // playback immediately instead of needing a second tap
   card.addEventListener('click', () => {
     if (video.paused) {
       video.play();
@@ -914,7 +960,11 @@ if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     wheelMultiplier: 1,
-    touchMultiplier: 1.2
+    touchMultiplier: 1.2,
+    // Let the horizontal model scroller handle its own scroll/swipe
+    // natively — without this, Lenis's global wheel hijack can fight
+    // the scroller's native horizontal scroll-snap right at that section.
+    prevent: (node) => node.closest('.hero-image-scroller') !== null
   });
 
   lenis.on('scroll', ScrollTrigger.update);
@@ -924,6 +974,14 @@ if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
   });
   gsap.ticker.lagSmoothing(0);
 }
+
+// Pinned sections (the descent scene) measure their start/end once on
+// load. If background photos/video are still loading at that point, the
+// measurement goes stale against the final layout and the pin can jump
+// or feel glitchy on first scroll. Refreshing after everything (images,
+// video, fonts) has actually loaded fixes that stale-measurement class
+// of bug specifically — it won't help with unrelated jank.
+window.addEventListener('load', () => ScrollTrigger.refresh());
 
 if (prefersReducedMotion) {
   // Skip all motion — just snap everything straight to its resting,
@@ -1296,6 +1354,77 @@ if (logoWrapperEl && logoImgEl) {
       );
     }
   });
+}
+
+// ==========================================================================
+// FINALE RUNWAY BANNER — tagline flies in once, on scroll into view
+// (not a scrubbed/looping effect, just a one-time reveal). Desktop
+// flies in from the left/right margins; mobile flies down from the top
+// since the text sits centered over the image there instead.
+// ==========================================================================
+if (typeof gsap !== 'undefined') {
+  if (prefersReducedMotion) {
+    gsap.set('.finale-line', { opacity: 1, y: 0, scale: 1 });
+  } else {
+    const finaleTl = gsap.timeline({
+      repeat: -1,
+      repeatDelay: 0.6, // brief pause on the empty state before looping back
+      scrollTrigger: {
+        trigger: '.finale-banner',
+        start: 'top 70%',
+        end: 'bottom top',
+        toggleActions: 'play pause resume pause' // loops only while in view; pauses (doesn't restart) when scrolled away
+      }
+    });
+
+    finaleTl
+      // Bloom Louder. — simple fade in
+      .fromTo('.finale-line-bloom', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0)
+
+      // Wear Bolder. — slides upward as it fades in
+      .fromTo('.finale-line-wear', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.35)
+
+      // Love Deeper. — soft fade, then a one-time light shimmer sweep
+      .fromTo('.finale-line-love', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.7)
+      .fromTo('.finale-shimmer-sweep', { left: '-60%' }, { left: '140%', duration: 0.9, ease: 'power1.inOut' }, 0.95)
+
+      // Discover DEEVYA. — pops in larger than the rest, with a bit of
+      // overshoot so it reads as the closing beat
+      .fromTo('.finale-line-cta',
+        { opacity: 0, scale: 0.75 },
+        { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.6)' },
+        1.1
+      )
+
+      // Hold the finished state for a beat, then fade everything out
+      // together before the loop restarts from the top
+      .to('.finale-line', { opacity: 0, duration: 0.6, ease: 'power2.in' }, 2.6);
+  }
+}
+
+// ==========================================================================
+// ORBIT LOGO BANNER — the video fades/scales in once on scroll into
+// view, then just keeps looping on its own (no ongoing scroll tie-in)
+// ==========================================================================
+if (typeof gsap !== 'undefined') {
+  if (prefersReducedMotion) {
+    gsap.set('.orbit-logo-video', { opacity: 1, scale: 1 });
+  } else {
+    gsap.fromTo('.orbit-logo-video',
+      { opacity: 0, scale: 0.9 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.orbit-logo-banner',
+          start: 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
 }
 </script>
 </body>
