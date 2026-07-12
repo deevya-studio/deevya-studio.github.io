@@ -309,6 +309,10 @@ main {
      scale in like film credits. Driven entirely by JS, no CSS transition. */
   opacity: 0;
   transform: translateY(50px) scale(0.96);
+
+  /* Gives the image-wrapper's cursor-tilt (JS, see script at the bottom
+     of index.html) real foreshortening instead of a flat skew */
+  perspective: 1000px;
 }
 
 /* Strict 1:1 Box Configuration */
@@ -318,6 +322,24 @@ main {
   overflow: hidden;
   background-color: #050505;
   position: relative;
+  will-change: transform;
+}
+
+/* Soft highlight that tracks the cursor across the image, following the
+   tilt (JS-driven --tilt-glow-x/y custom properties) — sells the illusion
+   that the photo is a glossy, curved surface reacting to light rather than
+   a flat card just rotating in place. */
+.image-wrapper .tilt-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--tilt-glow-x, 50%) var(--tilt-glow-y, 50%), rgba(255, 255, 255, 0.16) 0%, transparent 45%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 6;
+}
+.product-card:hover .tilt-glow {
+  opacity: 1;
 }
 
 /* Custom dark dynamic vignette over product images */
@@ -632,4 +654,173 @@ nav a::after {
 nav a:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* ==========================================================================
+   11. SCROLL DESCENT SCENE — 4-stage sunset-to-midnight story
+   ========================================================================== */
+.descent-scene {
+  position: relative;
+  height: 320vh; /* room for 4 scroll-driven stages, scrubbed smoothly */
+}
+
+.descent-stage {
+  /* No position:sticky here — it silently fails because html/body have
+     overflow-x:hidden (needed elsewhere on the page), which breaks native
+     CSS sticky in Chromium. GSAP ScrollTrigger's own `pin` option (set in
+     the script at the bottom of index.html) handles the pinning instead,
+     via JS rather than CSS, so it isn't affected by that issue at all. */
+  height: 100vh;
+  overflow: hidden;
+  background: #000000;
+}
+
+.descent-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.descent-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.1); /* headroom so the parallax drift above never exposes an edge */
+}
+
+/* Stage 0 (empty scene) is the permanent base layer — always visible */
+.descent-bg-origin {
+  z-index: 0;
+}
+
+/* Stage 1 (sunset / XBlush) fades in over the empty scene as the user
+   scrolls — starts invisible */
+.descent-bg-sunset {
+  z-index: 1;
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* Stage 3 (night / Glam X Night) crossfades in on top, starts invisible */
+.descent-bg-night {
+  z-index: 2;
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* Stage 2 (dusk) — sits above the sunset layer, below the night layer.
+   Warms then darkens the sunset photo mid-scroll to sell "the sky is
+   changing" before the actual night photo takes over. */
+.descent-grade-dusk {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(3, 3, 3, 0.75) 100%),
+              linear-gradient(180deg, rgba(255, 140, 60, 0.12), rgba(10, 8, 20, 0.7));
+  mix-blend-mode: multiply;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* A few soft gold/white glints that fade up once we're in full night
+   mode — cheap: a handful of tiny radial-gradient spots, no particles/JS */
+.descent-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 1.2%),
+    radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 1%),
+    radial-gradient(circle at 85% 55%, rgba(212, 175, 55, 0.9) 0%, transparent 1.4%),
+    radial-gradient(circle at 35% 70%, rgba(255, 255, 255, 0.7) 0%, transparent 1%),
+    radial-gradient(circle at 55% 40%, rgba(212, 175, 55, 0.8) 0%, transparent 1.2%);
+  will-change: opacity;
+}
+
+.descent-caption {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  z-index: 5;
+  pointer-events: none;
+  width: 38%;
+  max-width: 420px;
+}
+
+.descent-line {
+  font-family: 'Bodoni Moda', serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  transform-origin: right center;
+}
+
+/* Final beat: everything behind this layer blurs heavily via
+   backdrop-filter (cheap — no need to blur the actual image layers),
+   and the logo settles in large and centered to close out the story */
+.descent-finale {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(3, 3, 3, 0.45);
+  backdrop-filter: blur(30px) saturate(1.1);
+  -webkit-backdrop-filter: blur(30px) saturate(1.1);
+}
+
+.descent-finale-logo {
+  width: 300px; /* bigger on web, per request */
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .descent-scene {
+    height: 280vh;
+  }
+  .descent-caption {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: 10%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 88%;
+    max-width: 480px;
+  }
+  .descent-line {
+    font-size: 1.05rem;
+    transform-origin: center center;
+  }
+  .descent-finale-logo {
+    width: 160px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .descent-bg-night,
+  .descent-grade-dusk,
+  .descent-sparkles,
+  .descent-finale {
+    transition: none !important;
+  }
+  .descent-line {
+    transition: none !important;
+  }
 }

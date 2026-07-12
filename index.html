@@ -278,6 +278,51 @@ html, body {
   opacity: 1 !important;
 }
 
+/* Same, but class-driven — fires on click/tap too, which is what
+   actually makes this work on touch devices (they have no hover state) */
+.hero-showcase-container .interactive-model-card:not(.auto-loop) .model-hover-video.is-playing {
+  opacity: 1 !important;
+}
+.hero-showcase-container .interactive-model-card:not(.auto-loop) .model-static-img.is-hidden {
+  opacity: 0 !important;
+}
+
+/* Small hint telling visitors they can click/tap too, not just swipe —
+   fades in on hover for mouse users; stays gently visible by default on
+   touch devices, since there's no hover state to reveal it there. */
+.hero-showcase-container .model-card-hint {
+  position: absolute !important;
+  bottom: 6% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.25em !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  text-transform: uppercase !important;
+  z-index: 3 !important;
+  opacity: 0 !important;
+  transition: opacity 0.4s ease !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+@media (hover: hover) {
+  .hero-showcase-container .interactive-model-card:hover .model-card-hint {
+    opacity: 1 !important;
+  }
+}
+@media (hover: none) {
+  .hero-showcase-container .model-card-hint {
+    opacity: 0.55 !important;
+  }
+}
+
+/* Once she's actually walking, the hint has done its job — hide it,
+   in both the hover case and the always-visible touch case */
+.hero-showcase-container .model-hover-video.is-playing ~ .model-card-hint {
+  opacity: 0 !important;
+}
+
 /* AUTO-LOOP CARD (Slide 1): Show video instantly when playing */
 .hero-showcase-container .interactive-model-card.auto-loop .model-hover-video.is-playing {
   opacity: 1 !important;
@@ -407,6 +452,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model2_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -417,6 +463,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model3_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -427,6 +474,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model5_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -437,6 +485,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model4_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -447,6 +496,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model6_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -457,6 +507,7 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model8_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
     </div>
 
@@ -467,7 +518,53 @@ html, body {
         <video class="model-hover-video" loop muted playsinline>
           <source src="assets/edits/model7_walking.mp4" type="video/mp4">
         </video>
+        <span class="model-card-hint">TAP TO WALK</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     SCROLL DESCENT SCENE — 4-stage sunset-to-midnight story
+     A pinned section, fully scroll-driven (scrub, not click):
+       Stage 0 (Empty scene)       → pure background, no model, on load
+       Stage 1 (Sunset / XBlush)   → she fades in over the empty scene, caption 1
+       Stage 2 (Dusk)              → color-grade darkens over the same
+                                      photo while the sky/water shift, caption 2
+       Stage 3 (Night Reveal)      → the Glam X Night photo crossfades in
+                                      on top, soft gold sparkles, caption 3
+       Stage 4 (Finale)            → background blurs heavily, big logo fades in
+     ========================================================================== -->
+<section class="descent-scene" id="descent-scene">
+  <div class="descent-stage">
+    <!-- Stage 0: empty scene, no model — the very first frame on load -->
+    <div class="descent-bg descent-bg-origin">
+      <img src="assets/edits/descent-scene-origin.jpg" alt="Golden hour beach scene" loading="eager">
+    </div>
+
+    <!-- Stage 1: Sunset / XBlush — she fades in over the empty scene -->
+    <div class="descent-bg descent-bg-sunset">
+      <img src="assets/edits/descent-scene-arrived.jpg" alt="Deevya model in XBlush at golden hour" loading="eager">
+    </div>
+
+    <!-- Stage 2: Dusk color-grade, fades in over the sunset photo -->
+    <div class="descent-grade-dusk"></div>
+
+    <!-- Stage 3: Night Reveal / Glam X Night — crossfades on top -->
+    <div class="descent-bg descent-bg-night">
+      <img src="assets/edits/descent-scene-outfit-b.jpg" alt="Deevya model in Glam X Night" loading="eager">
+    </div>
+    <div class="descent-sparkles"></div>
+
+    <!-- Stage 4: Finale — heavy blur backdrop + big logo, no tagline for now -->
+    <div class="descent-finale">
+      <img src="assets/edits/logo.png" alt="DEEVYA" class="descent-finale-logo">
+    </div>
+
+    <div class="descent-caption">
+      <p class="descent-line descent-line-1">From golden hours to unforgettable moments.</p>
+      <p class="descent-line descent-line-2">The Day Ends. Your Style Doesn't.</p>
+      <p class="descent-line descent-line-3">When the lights come alive, so do you.</p>
     </div>
   </div>
 </section>
@@ -704,6 +801,7 @@ html, body {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
 <script>
 // ==========================================================================
 // COLLECTIONS DROPDOWN
@@ -764,13 +862,34 @@ document.querySelectorAll('.interactive-model-card').forEach(card => {
     return;
   }
 
-  // HOVER TRIGGER SETUP (Slide 2+)
+  // HOVER TRIGGER SETUP (Slide 2+, mouse users)
+  const staticImg = card.querySelector('.model-static-img');
   card.addEventListener('mouseenter', () => {
     video.play();
+    video.classList.add('is-playing');
+    staticImg?.classList.add('is-hidden');
   });
   card.addEventListener('mouseleave', () => {
     video.pause();
     video.currentTime = 0; // Instantly winds back to the first frame
+    video.classList.remove('is-playing');
+    staticImg?.classList.remove('is-hidden');
+  });
+
+  // CLICK/TAP TRIGGER (Slide 2+, matches the "TAP TO WALK" hint and is
+  // what actually makes this work on touch devices, since they have no
+  // hover state to fall back on)
+  card.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
+      video.classList.add('is-playing');
+      staticImg?.classList.add('is-hidden');
+    } else {
+      video.pause();
+      video.currentTime = 0;
+      video.classList.remove('is-playing');
+      staticImg?.classList.remove('is-hidden');
+    }
   });
 });
 
@@ -781,6 +900,31 @@ gsap.registerPlugin(ScrollTrigger);
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ==========================================================================
+// LENIS SMOOTH SCROLL — this is what gives the page that "Figma/Framer"
+// feel: native scroll is instant and mechanical, Lenis adds a light
+// physics-based glide so momentum carries between frames instead of the
+// page snapping directly to the wheel/touch input. Driven off GSAP's own
+// ticker so it and ScrollTrigger stay perfectly in sync, frame for frame.
+// Skipped entirely for reduced-motion users — native scroll stays instant.
+// ==========================================================================
+if (!prefersReducedMotion && typeof Lenis !== 'undefined') {
+  const lenis = new Lenis({
+    duration: 1.05,       // how long momentum takes to settle — higher = glidier
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.2
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
+}
+
 if (prefersReducedMotion) {
   // Skip all motion — just snap everything straight to its resting,
   // fully visible state (the CSS defaults start these hidden for the
@@ -790,6 +934,8 @@ if (prefersReducedMotion) {
   gsap.set('.panel-logo-img', { scale: 1, scaleX: 1, scaleY: 1, y: 0 });
   gsap.set('.product-card', { opacity: 1, y: 0, scale: 1 });
   gsap.set('.section-divider', { scaleX: 1 });
+  gsap.set('.descent-bg-sunset, .descent-bg-night, .descent-grade-dusk, .descent-sparkles, .descent-finale', { opacity: 1 });
+  gsap.set('.descent-line-1, .descent-line-2, .descent-line-3', { opacity: 0 });
 } else {
 
   // --- 1. OPENING CURTAIN: letterbox bars start as a full black screen
@@ -865,6 +1011,78 @@ if (prefersReducedMotion) {
     .to(heading, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
   });
 
+  // --- 4b. DESCENT SCENE: pinned scroll — a 4-beat sunset-to-midnight
+  //          story. Each stage's caption fades in, holds, then clears
+  //          before the next one starts, all tied directly to scroll
+  //          position so it reads as a smooth narrative, not a jump-cut. ---
+  const descentTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.descent-scene',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.15, /* stays closely tied to actual scroll position, no laggy smoothing */
+      pin: '.descent-stage',
+      pinSpacing: false /* .descent-scene's own height already reserves the scroll room */
+    }
+  });
+
+  descentTl
+    // Depth parallax — background drifts slowly, sparkles (closer to
+    // "camera") drift faster. Spans the full scroll range so it's always
+    // subtly active underneath everything else happening in the scene.
+    // This is what actually reads as spatial depth, vs. a flat crossfade.
+    .fromTo('.descent-bg-origin, .descent-bg-sunset, .descent-bg-night',
+      { yPercent: 0 }, { yPercent: -6, ease: 'none', duration: 1 }, 0
+    )
+    .fromTo('.descent-sparkles',
+      { yPercent: 0 }, { yPercent: -14, ease: 'none', duration: 1 }, 0
+    )
+
+    // Stage 0 → 1 — pure empty scene for a beat, then she fades in
+    .fromTo('.descent-bg-sunset',
+      { opacity: 0, filter: 'blur(14px)', scale: 1.03 },
+      { opacity: 1, filter: 'blur(0px)', scale: 1, ease: 'none', duration: 0.14 },
+      0.05
+    )
+
+    // Stage 1 — Sunset / XBlush: caption pops in with a slight overshoot,
+    // holds, then pops back out and fades
+    .fromTo('.descent-line-1', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.09, ease: 'back.out(1.8)' }, 0.08)
+    .to('.descent-line-1', { opacity: 1, duration: 0.09 }, 0.17)
+    .to('.descent-line-1', { opacity: 0, scale: 0.85, duration: 0.06, ease: 'power2.in' }, 0.26)
+
+    // Stage 2 — Dusk: the sky/water darken via the grade overlay while
+    // the second caption pops in
+    .to('.descent-grade-dusk', { opacity: 1, ease: 'none', duration: 0.22 }, 0.28)
+    .fromTo('.descent-line-2', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.09, ease: 'back.out(1.8)' }, 0.32)
+    .to('.descent-line-2', { opacity: 1, duration: 0.08 }, 0.41)
+    .to('.descent-line-2', { opacity: 0, scale: 0.85, duration: 0.06, ease: 'power2.in' }, 0.50)
+
+    // Stage 3 — Night Reveal: the Glam X Night photo finishes crossfading
+    // in (fully crisp, blur resolved) BEFORE the third caption appears —
+    // she should be sharp, not still blurring in, while that line is up
+    .fromTo('.descent-bg-night',
+      { opacity: 0, filter: 'blur(10px)', scale: 1.03 },
+      { opacity: 1, filter: 'blur(0px)', scale: 1, ease: 'none', duration: 0.14 },
+      0.40
+    )
+    .to('.descent-sparkles', { opacity: 1, ease: 'none', duration: 0.26 }, 0.46)
+    .fromTo('.descent-line-3', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.09, ease: 'back.out(1.8)' }, 0.58)
+    .to('.descent-line-3', { opacity: 1, duration: 0.1 }, 0.67)
+    .to('.descent-line-3', { opacity: 0, scale: 0.85, duration: 0.06, ease: 'power2.in' }, 0.78)
+
+    // Stage 4 — Finale: background blurs heavily, the big logo settles in
+    .fromTo('.descent-finale',
+      { opacity: 0 },
+      { opacity: 1, ease: 'power2.out', duration: 0.16 },
+      0.84
+    )
+    .fromTo('.descent-finale-logo',
+      { scale: 0.85, y: 20 },
+      { scale: 1, y: 0, ease: 'power2.out', duration: 0.16 },
+      0.84
+    );
+
   // --- 5. SECTION DIVIDERS: line draws across as it enters view ---
   gsap.utils.toArray('.section-divider').forEach((line) => {
     gsap.to(line, {
@@ -939,7 +1157,52 @@ if (prefersReducedMotion) {
     });
   });
 
-  // --- 7. BUY BUTTONS: elastic lift on hover instead of a flat CSS transform ---
+  // --- 6b. PRODUCT CARDS: cursor-reactive tilt + moving gloss, giving
+  //         flat photos a sense of 3D depth. The whole card lifts (above),
+  //         while the image-wrapper itself tilts toward the cursor like a
+  //         glossy print reacting to light, and a soft highlight tracks
+  //         the pointer across the surface to sell the illusion. ---
+  document.querySelectorAll('.product-card').forEach((card) => {
+    const media = card.querySelector('.image-wrapper');
+    if (!media) return;
+
+    // Soft highlight layer that tracks the cursor, reinforcing the tilt
+    // as if light is glancing off a curved, glossy surface
+    const glow = document.createElement('div');
+    glow.className = 'tilt-glow';
+    media.appendChild(glow);
+
+    gsap.set(media, { transformPerspective: 800, transformStyle: 'preserve-3d' });
+
+    const MAX_TILT = 9;   // degrees
+    const MAX_SHIFT = 6;  // px — subtle push opposite the tilt for parallax
+
+    const setRotX = gsap.quickTo(media, 'rotationX', { duration: 0.5, ease: 'power3.out' });
+    const setRotY = gsap.quickTo(media, 'rotationY', { duration: 0.5, ease: 'power3.out' });
+    const setShiftX = gsap.quickTo(media, 'x', { duration: 0.5, ease: 'power3.out' });
+    const setShiftY = gsap.quickTo(media, 'y', { duration: 0.5, ease: 'power3.out' });
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      const relY = (e.clientY - rect.top) / rect.height;
+
+      setRotY((relX - 0.5) * 2 * MAX_TILT);
+      setRotX((0.5 - relY) * 2 * MAX_TILT);
+      setShiftX((relX - 0.5) * -2 * MAX_SHIFT);
+      setShiftY((relY - 0.5) * -2 * MAX_SHIFT);
+
+      glow.style.setProperty('--tilt-glow-x', (relX * 100) + '%');
+      glow.style.setProperty('--tilt-glow-y', (relY * 100) + '%');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      setRotX(0);
+      setRotY(0);
+      setShiftX(0);
+      setShiftY(0);
+    });
+  });
   document.querySelectorAll('.buy-button').forEach((btn) => {
     btn.addEventListener('mouseenter', () => {
       gsap.to(btn, { y: -4, scale: 1.03, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
