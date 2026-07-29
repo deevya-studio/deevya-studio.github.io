@@ -1013,3 +1013,173 @@ nav a:hover::after {
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   14. NEW ARRIVALS SLIDER — horizontal swipe, tap-to-walk (same
+   interaction pattern as the hero scroller, scoped separately here since
+   the hero version's sizing is specific to that full-height section)
+   ========================================================================== */
+.upcoming-scroller {
+  display: flex;
+  flex-direction: row;
+  gap: 28px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-bottom: 60px;
+}
+.upcoming-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.upcoming-slide {
+  flex: 0 0 320px;
+  width: 320px;
+  min-width: 0; /* flex items default to min-width:auto, which can let inner content force the card wider than its flex-basis */
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  /* Same scroll-reveal starting state as .product-card — see script at
+     the bottom of index.html */
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.upcoming-scroller .upcoming-poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* was 3/4 — that mismatch with the actual 1:1 poster was cropping it */
+  overflow: hidden;
+  background: #000000;
+  cursor: pointer;
+}
+
+.upcoming-scroller .upcoming-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.upcoming-slide:hover .upcoming-poster img {
+  transform: scale(1.04);
+}
+
+.upcoming-info {
+  padding: 20px 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upcoming-badge {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #d4af37;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.upcoming-title {
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .upcoming-scroller {
+    padding-left: 6%;
+    padding-right: 6%;
+    scroll-padding: 0 6%;
+  }
+  .upcoming-slide {
+    flex: 0 0 88%; /* narrower than full width, with equal breathing margin on both sides — reads as cleanly centered rather than edge-to-edge */
+    width: 88%;
+    scroll-snap-align: center; /* settles centered on snap instead of aligned to the left edge */
+  }
+}
+
+/* ==========================================================================
+   15. POSTER LIGHTBOX — full-screen viewer for New Arrivals posters
+   ========================================================================== */
+.poster-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.poster-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.poster-lightbox-img {
+  max-width: 90vw;
+  max-height: 88vh;
+  object-fit: contain;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  transform: scale(0.92);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.poster-lightbox.is-open .poster-lightbox-img {
+  transform: scale(1);
+}
+
+.poster-lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.poster-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  .poster-lightbox-close {
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster-lightbox,
+  .poster-lightbox-img,
+  .poster-lightbox-close {
+    transition: none !important;
+  }
+}

@@ -19,6 +19,7 @@
         <span class="nav-caret" aria-hidden="true"></span>
       </button>
       <div class="nav-dropdown-panel" id="collections-panel">
+        <a href="#new-arrivals">New Arrivals</a>
         <a href="#summer-show">Summer 2026</a>
         <a href="#crowned-couture">Crowned Couture</a>
         <a href="#editorial">Editorial &amp; Noir</a>
@@ -574,10 +575,57 @@ html, body {
 </section>
 
 <main>
+  <!-- ==========================================================================
+       NEW ARRIVALS SLIDER — one look per collection, live and shoppable.
+       Reuses the exact same .interactive-model-card structure as the hero
+       scroller (static image + walking video, tap/hover to play) so the
+       existing tap-to-walk JS picks these up automatically with zero new
+       script needed — only the CSS is scoped separately below since the
+       hero version's sizing rules are specific to that full-height section.
+       ========================================================================== -->
+  <h2 id="new-arrivals" class="collection-heading">NEW ARRIVALS // SHOP THE LOOK</h2>
+  <div class="upcoming-scroller">
+    <div class="upcoming-slide">
+      <div class="upcoming-poster" data-lightbox>
+        <img src="assets/edits/vintage-fall-chic.png" alt="Vintage Fall Chic" loading="lazy">
+      </div>
+      <div class="upcoming-info">
+        <span class="upcoming-badge">SEPTEMBER</span>
+        <h3 class="upcoming-title">Vintage Fall Chic</h3>
+        <a href="https://www.imvu.com/shop/product.php?products_id=75420164" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+      </div>
+    </div>
+
+    <div class="upcoming-slide">
+      <div class="upcoming-poster" data-lightbox>
+        <img src="assets/edits/freya-odin-viking.png" alt="Freya & Odin" loading="lazy">
+      </div>
+      <div class="upcoming-info">
+        <span class="upcoming-badge">OCTOBER</span>
+        <h3 class="upcoming-title">Freya &amp; Odin</h3>
+        <a href="https://www.imvu.com/shop/product.php?products_id=75454059" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+      </div>
+    </div>
+
+    <div class="upcoming-slide">
+      <div class="upcoming-poster" data-lightbox>
+        <img src="assets/edits/serendipity-autumn.png" alt="Serendipity" loading="lazy">
+      </div>
+      <div class="upcoming-info">
+        <span class="upcoming-badge">AUTUMN</span>
+        <h3 class="upcoming-title">Serendipity</h3>
+        <a href="https://www.imvu.com/shop/product.php?products_id=75481183" target="_blank" class="buy-button">SHOP THIS LOOK ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+
   <!-- ==========================================
        CAPSULE I: SUMMER 2026 SHOW (HIGHLIGHT EVENT)
        ========================================== -->
-  <h2 id="summer-show" class="collection-heading">UPCOMING EVENT // SUMMER SHOW</h2>
+  <h2 id="summer-show" class="collection-heading">EURO SUMMER FASHION EVENT</h2>
   <section class="product-carousel">
 
     <!-- THEME 1: ISLAND GOLD & GLOW -->
@@ -837,6 +885,16 @@ html, body {
   <p>&copy; 2026 Deevya Digital Apparel. All Rights Reserved.</p>
 </footer>
 
+<!-- ==========================================================================
+     POSTER LIGHTBOX — shared full-screen viewer for the "New Arrivals"
+     posters. One instance reused for all 3; the click handler at the
+     bottom of this script swaps its image source per poster clicked.
+     ========================================================================== -->
+<div class="poster-lightbox" id="posterLightbox">
+  <button class="poster-lightbox-close" id="posterLightboxClose" aria-label="Close">&times;</button>
+  <img class="poster-lightbox-img" id="posterLightboxImg" src="" alt="">
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
@@ -991,6 +1049,7 @@ if (prefersReducedMotion) {
   gsap.set('.panel-content > *, .scroller-slide, .collection-heading', { opacity: 1, y: 0, x: 0 });
   gsap.set('.panel-logo-img', { scale: 1, scaleX: 1, scaleY: 1, y: 0 });
   gsap.set('.product-card', { opacity: 1, y: 0, scale: 1 });
+  gsap.set('.upcoming-slide', { opacity: 1, y: 0 });
   gsap.set('.section-divider', { scaleX: 1 });
   gsap.set('.descent-bg-sunset, .descent-bg-night, .descent-grade-dusk, .descent-sparkles, .descent-finale', { opacity: 1 });
   gsap.set('.descent-line-1, .descent-line-2, .descent-line-3', { opacity: 0 });
@@ -1172,6 +1231,26 @@ if (prefersReducedMotion) {
       }
     });
   });
+
+  // --- 6b. NEW ARRIVALS slider: same staggered rise-in as the product
+  //         cards above — the tap-to-walk video interaction itself is
+  //         already handled by the shared .interactive-model-card JS
+  //         near the top of this script, no extra code needed for that ---
+  const upcomingScroller = document.querySelector('.upcoming-scroller');
+  if (upcomingScroller) {
+    gsap.to(upcomingScroller.querySelectorAll('.upcoming-slide'), {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: upcomingScroller,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
 
   gsap.utils.toArray('.product-card img').forEach((img) => {
     // Base scale gives the image room to drift during the parallax scrub
@@ -1426,6 +1505,43 @@ if (typeof gsap !== 'undefined') {
     );
   }
 }
+
+// ==========================================================================
+// POSTER LIGHTBOX — click any "New Arrivals" poster to view it full-screen
+// ==========================================================================
+(() => {
+  const lightbox = document.getElementById('posterLightbox');
+  const lightboxImg = document.getElementById('posterLightboxImg');
+  const closeBtn = document.getElementById('posterLightboxClose');
+  if (!lightbox || !lightboxImg || !closeBtn) return;
+
+  const openLightbox = (src, alt) => {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt;
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove('is-open');
+    document.body.style.overflow = '';
+  };
+
+  document.querySelectorAll('[data-lightbox]').forEach((poster) => {
+    poster.addEventListener('click', () => {
+      const img = poster.querySelector('img');
+      if (img) openLightbox(img.src, img.alt);
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+})();
 </script>
 </body>
 </html>
