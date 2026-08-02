@@ -20,6 +20,7 @@
       </button>
       <div class="nav-dropdown-panel" id="collections-panel">
         <a href="#new-arrivals">New Arrivals</a>
+        <a href="#upcoming-event-anchor">Upcoming Event</a>
         <a href="#summer-show">Summer 2026</a>
         <a href="#crowned-couture">Crowned Couture</a>
         <a href="#editorial">Editorial &amp; Noir</a>
@@ -574,6 +575,8 @@ html, body {
   </div>
 </section>
 
+</section>
+
 <main>
   <!-- ==========================================================================
        NEW ARRIVALS SLIDER — one look per collection, live and shoppable.
@@ -621,6 +624,47 @@ html, body {
 
   <hr class="section-divider">
 
+  <!-- ==========================================================================
+     UPCOMING EVENT — Viking Couture scroll-scrubbed sequence banner
+     (1920x540). Placed here (inside <main>, after New Arrivals, before
+     Summer Show) to match the nav dropdown order — it uses the
+     "full-bleed breakout" CSS trick (.viking-banner-track) so it still
+     renders edge-to-edge despite <main> being width-capped at 850px,
+     without needing a second <main> element (which isn't valid HTML).
+
+     58 frames drawn to a <canvas>, swapped based on scroll position via
+     GSAP ScrollTrigger. Each frame is pre-composited: the real footage
+     is shown uncropped at full height, with a blurred/darkened copy of
+     the same frame filling the extra width on both sides — the DEEVYA
+     logo and the Freya & Odin title/CTA graphic sit in those blurred
+     side margins and "pop" in once the scroll reaches them.
+     ========================================================================== -->
+  <div id="upcoming-event-anchor"></div>
+  <div class="viking-banner-track" id="viking-couture-track">
+    <div class="viking-banner" id="viking-couture-banner">
+      <canvas class="viking-banner-canvas" aria-label="Viking Couture — Freya &amp; Odin"></canvas>
+      <img src="assets/edits/viking-frames/viking-deevya-logo.png" alt="Deevya" class="viking-overlay-logo">
+      <img src="assets/edits/viking-frames/viking-title.png" alt="Viking Couple Freya &amp; Odin Collection — Shop the Look" class="viking-overlay-title">
+    </div>
+  </div>
+
+  <!-- Mobile-only version: the scroll-scrubbed frame sequence + pin above is a
+       desktop technique (needs a tall scroll track to scrub through). On
+       phones that's fiddly (viewport-height quirks, cramped side margins),
+       so mobile instead gets the same footage as a plain looping video —
+       simpler, lighter, and nothing to keep in sync with scroll position.
+       CSS hides whichever of the two doesn't apply for the current screen
+       width; the JS above already skips setting up ScrollTrigger on mobile. -->
+  <div class="viking-mobile-banner">
+    <video class="viking-mobile-video" autoplay muted loop playsinline preload="metadata" poster="assets/edits/viking-frames/viking-frame-001.jpg">
+      <source src="assets/edits/viking-frames/freya-odin-mobile-portrait.mp4" type="video/mp4">
+    </video>
+    <div class="viking-mobile-overlay">
+      <img src="assets/edits/viking-frames/viking-deevya-logo.png" alt="Deevya" class="viking-mobile-logo">
+    </div>
+  </div>
+
+  <hr class="section-divider">
 
   <!-- ==========================================
        CAPSULE I: SUMMER 2026 SHOW (HIGHLIGHT EVENT)
@@ -1001,6 +1045,14 @@ document.querySelectorAll('.interactive-model-card').forEach(card => {
 // GSAP CINEMATIC SEQUENCE
 // ==========================================================================
 gsap.registerPlugin(ScrollTrigger);
+
+// Mobile browsers (Safari iOS, Chrome Android) fire resize events as the
+// address bar shows/hides while the page scrolls. ScrollTrigger reacts to
+// those by recalculating pin positions mid-scroll, which is what causes a
+// pinned section (like the Viking Couture banner below) to momentarily lose
+// sync and show a gap on mobile. This tells it to ignore that specific
+// resize trigger — recommended by GSAP for exactly this symptom.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1541,6 +1593,122 @@ if (typeof gsap !== 'undefined') {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
   });
+})();
+
+// ==========================================================================
+// UPCOMING EVENT (Viking Couture) — scroll-scrubbed image sequence
+// Preloads 58 frames, draws the current one to a <canvas>, and picks which
+// frame to show based on how far you've scrolled through the banner. The
+// DEEVYA logo and the Freya & Odin title/CTA graphic pop in once you're a
+// little way into the scroll, and stay put for the rest of it.
+// ==========================================================================
+(() => {
+  const track = document.getElementById('viking-couture-track');
+  const banner = document.getElementById('viking-couture-banner');
+  const canvas = banner ? banner.querySelector('.viking-banner-canvas') : null;
+  const overlayLogo = banner ? banner.querySelector('.viking-overlay-logo') : null;
+  const overlayTitle = banner ? banner.querySelector('.viking-overlay-title') : null;
+  if (!track || !banner || !canvas) return;
+  if (window.matchMedia('(max-width: 768px)').matches) return; // mobile uses the plain <video> version instead — see .viking-mobile-banner
+
+  const FRAME_COUNT = 58;
+  const FRAME_PATH = (i) => `assets/edits/viking-frames/viking-frame-${String(i).padStart(3, '0')}.jpg`;
+  const POP_IN_PROGRESS = 0.1; // logo/title pop in once scroll is 10% through the banner
+
+  const ctx = canvas.getContext('2d');
+  const images = [];
+  let loadedCount = 0;
+  let currentFrame = 0;
+  let overlaysShown = false;
+
+  function drawFrame(index) {
+    const img = images[index];
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  }
+
+  function popInOverlays() {
+    if (overlaysShown) return;
+    overlaysShown = true;
+    // Each overlay has its own Y offset (see the CSS comment above
+    // .viking-overlay-logo/.viking-overlay-title) so the DEEVYA wordmark
+    // and the "Freya & Odin" line land on the same row instead of both
+    // graphics just sharing a center point.
+    const overlayOffsets = [[overlayLogo, '-100%', '-57%'], [overlayTitle, '0%', '-46%']];
+    overlayOffsets.forEach(([el, x, y], i) => {
+      if (!el) return;
+      if (typeof gsap !== 'undefined' && !prefersReducedMotion) {
+        gsap.to(el, {
+          opacity: 1,
+          scale: 1,
+          x: x,
+          y: y,
+          duration: 0.7,
+          delay: i * 0.12,
+          ease: 'back.out(2.2)'
+        });
+      } else {
+        el.style.opacity = '1';
+        el.style.transform = `translate(${x}, ${y}) scale(1)`;
+      }
+    });
+  }
+
+  function hideOverlays() {
+    if (!overlaysShown) return;
+    overlaysShown = false;
+    [[overlayLogo, '-100%', '-57%'], [overlayTitle, '0%', '-46%']].forEach(([el, x, y]) => {
+      if (!el) return;
+      if (typeof gsap !== 'undefined' && !prefersReducedMotion) {
+        gsap.to(el, { opacity: 0, scale: 0.6, x: x, y: y, duration: 0.3, ease: 'power2.in' });
+      } else {
+        el.style.opacity = '0';
+      }
+    });
+  }
+
+  for (let i = 1; i <= FRAME_COUNT; i++) {
+    const img = new Image();
+    img.src = FRAME_PATH(i);
+    img.onload = () => {
+      loadedCount++;
+      if (i === 1) drawFrame(0); // show the first frame as soon as it's ready
+    };
+    img.onerror = () => {
+      console.warn('Upcoming Event banner: failed to load', FRAME_PATH(i), '— check that assets/edits/viking-frames/ exists with all', FRAME_COUNT, 'files.');
+    };
+    images.push(img);
+  }
+
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.create({
+      trigger: track,
+      start: 'top top',
+      end: 'bottom bottom',
+      pin: banner,
+      pinSpacing: false, /* the track's own height already reserves the scroll room */
+      onUpdate: (self) => {
+        const frameIndex = Math.min(
+          FRAME_COUNT - 1,
+          Math.floor(self.progress * FRAME_COUNT)
+        );
+        if (frameIndex !== currentFrame) {
+          currentFrame = frameIndex;
+        }
+        drawFrame(currentFrame);
+
+        if (self.progress >= POP_IN_PROGRESS) {
+          popInOverlays();
+        } else {
+          hideOverlays();
+        }
+      }
+    });
+  }
+
+  window.addEventListener('resize', () => drawFrame(currentFrame));
 })();
 </script>
 </body>

@@ -282,6 +282,14 @@ nav a:hover {
   background: linear-gradient(90deg, #161616, transparent);
 }
 
+/* Sits directly under the Viking Couture banner (which has its own bottom
+   margin already), so it doesn't need the full 140px top margin every
+   other .collection-heading gets — that stacked on top of the banner's
+   own spacing was the visible gap here. */
+#summer-show {
+  margin-top: 24px;
+}
+
 /* ==========================================================================
    5. CROP-LOCKED PRODUCT GRID (1:1 AI LAYOUT)
    ========================================================================== */
@@ -1181,5 +1189,156 @@ nav a:hover::after {
   .poster-lightbox-img,
   .poster-lightbox-close {
     transition: none !important;
+  }
+}
+
+/* ==========================================================================
+   VIKING COUTURE — scroll-scrubbed sequence banner
+   ========================================================================== */
+/* The tall wrapper that defines how much scrolling it takes to play
+   through all 58 frames — taller = slower/longer. Adjust this height to
+   change the pacing; nothing else needs to change.
+
+   It sits inside <main> now (so it lands in the right document order,
+   after New Arrivals and before Summer Show — matching the nav dropdown
+   order), but <main> caps content at 850px wide. The width:100vw +
+   negative-margin trick below breaks it out to full viewport width
+   anyway, without needing a second <main> element (invalid HTML). */
+.viking-banner-track {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 300vh; /* fallback for browsers without lvh support */
+  height: 300lvh; /* lvh = height with mobile browser chrome collapsed, always
+                      the same value regardless of address-bar show/hide, so
+                      the pin's scroll length doesn't shift under the user's
+                      thumb on mobile the way plain vh can */
+  margin-bottom: 16px;
+  /* No flex here on purpose — pinning a flex child is a known trouble
+     spot with GSAP ScrollTrigger (it's very likely what caused the
+     banner to overlap/"stack" into the next section). Centering is done
+     with plain absolute positioning below instead, the same safe pattern
+     already working fine for the descent scene elsewhere on this page. */
+}
+
+.viking-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1920 / 540;
+  background: #000000 url('assets/edits/viking-frames/viking-frame-001.jpg') center / cover no-repeat;
+  overflow: hidden;
+}
+
+.viking-banner-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* DEEVYA crest + the Freya & Odin title/CTA graphic — each sits inside
+   its own blurred side margin (the sharp footage occupies the center
+   50% of the banner, so each side margin is exactly 25% wide, from 0-25%
+   on the left and 75-100% on the right). They're anchored to the INNER
+   edge of their margin (right edge for the logo, left edge for the
+   title) so they sit close against the banner photo rather than
+   floating in the middle of empty margin space — that's what "left"
+   below measures. They "pop" in via GSAP once the scroll reaches them
+   (see script at the bottom of index.html). Start hidden and scaled
+   down here; JS animates them in.
+
+   NOTE on the Y offset: these two PNGs aren't laid out the same way
+   internally — the wordmark sits well below the logo's crown, while
+   "Freya & Odin" sits above the "COLLECTION" line and the CTA button
+   beneath it in the title graphic. The two translateY percentages
+   below are tuned (from the actual rendered screenshot, not just the
+   source art) so the DEEVYA wordmark and the "Freya & Odin" line land
+   on the same row, in the middle of the banner. Percentage transforms
+   are relative to the element's own size, so this still works if
+   width/scale changes — but if you resize either graphic's own art
+   (e.g. re-export with different padding), these will need re-tuning. */
+.viking-overlay-logo,
+.viking-overlay-title {
+  position: absolute;
+  top: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.viking-overlay-logo {
+  left: 23%; /* right edge of the box lands here — just shy of the photo's left edge at 25% */
+  width: 21%;
+  max-width: 200px;
+  transform: translate(-100%, -57%) scale(0.6);
+}
+
+.viking-overlay-title {
+  left: 77%; /* left edge of the box lands here — just past the photo's right edge at 75% */
+  width: 25%;
+  max-width: 270px;
+  transform: translate(0%, -46%) scale(0.6);
+}
+
+/* Mobile gets a plain looping video instead of the scroll-scrubbed
+   canvas (see the HTML comment above .viking-mobile-banner for why).
+   Hide/show the two versions at the same 768px breakpoint the JS above
+   uses to decide whether to set up ScrollTrigger at all. */
+.viking-mobile-banner {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .viking-banner-track {
+    display: none;
+  }
+
+  .viking-mobile-banner {
+    display: block;
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    margin-left: -50vw;
+    /* This video was shot vertically for mobile (810×1440, 9:16), unlike
+       the desktop footage — so it needs no aggressive cropping, just its
+       own native ratio. object-fit:cover below still guards against any
+       container/video ratio mismatch on odd screen sizes. */
+    aspect-ratio: 9 / 16;
+    max-height: 720px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    background: #000000;
+  }
+
+  .viking-mobile-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .viking-mobile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    /* subtle vignette so the artwork stays legible without flattening the footage */
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 65%);
+  }
+
+  .viking-mobile-logo {
+    width: 130px;
+  }
+
+  .viking-mobile-title {
+    width: 170px;
   }
 }
